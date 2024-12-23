@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@0,100..700;1,100..700&family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <title>Responsive Landing Page</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      /* font-family: Arial, sans-serif; */
+      font-family: "Josefin Sans", serif;
+      line-height: 1.6;
+      overflow: hidden; /* Prevent scrolling while the landing page is visible */
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      background: #C62641;
+      color: #fff;
+      padding: 1rem 0;
+    }
+
+    .container {
+      width: 90%;
+      max-width: 1200px;
+      margin: auto;
+    }
+
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-size: 1.5rem;
+      font-weight: bold;
+      transition: opacity 0.3s ease; /* Smooth transition for hiding/showing */
+    }
+
+    .nav-links {
+      display: flex;
+      list-style: none;
+      transition: transform 0.3s ease-in-out;
+    }
+
+    .nav-links li {
+      margin: 0 1rem;
+    }
+
+    .nav-links a {
+      color: #fff;
+      text-decoration: none;
+      font-size: 1rem;
+      cursor: pointer;
+      padding: 20px 30px;
+      border-radius: 4px;
+      transition: all 0.3s ease;
+      position: relative;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    /* Remove hover background, keep only transform */
+    .nav-links a:hover {
+      transform: translateY(-2px);
+    }
+
+    /* Active state - remove background */
+    .nav-links a.active {
+      font-weight: bold;
+    }
+
+    /* Underline effect for active state */
+    .nav-links a.active::after {
+      content: '';
+      position: absolute;
+      bottom: 10px;
+      left: 30px;
+      right: 30px;
+      height: 2px;
+      background: #fff;
+      transform: scaleX(1);
+      transition: transform 0.3s ease;
+    }
+
+    /* Hover underline effect for non-active items */
+    .nav-links a:not(.active)::after {
+      content: '';
+      position: absolute;
+      bottom: 10px;
+      left: 30px;
+      right: 30px;
+      height: 2px;
+      background: #fff;
+      transform: scaleX(0);
+      transition: transform 0.3s ease;
+    }
+
+    .nav-links a:not(.active):hover::after {
+      transform: scaleX(1);
+    }
+
+    .menu-btn {
+      display: none;
+      background: none;
+      border: none;
+      color: #fff;
+      font-size: 1.5rem;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+
+    /* Hero section with flex centering */
+    .hero {
+      text-align: center;
+      padding: 2rem 1rem;
+      background: none;
+      color: #333;
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* Text styles - centered with max-width */
+    .hero h1 {
+      position: absolute;
+      top: 125px;
+      left: 0;
+      right: 0;
+      margin: 0 auto;
+      max-width: 600px;
+      font-size: 2.5rem;
+      z-index: 2;
+    }
+
+    .hero p {
+      position: absolute;
+      top: 195px;
+      left: 0;
+      right: 0;
+      margin: 0 auto;
+      max-width: 500px;
+      font-size: 1.2rem;
+      z-index: 2;
+    }
+
+    /* Hero content div */
+    .hero-content {
+      width: 90%;
+      height: calc(100vh - 150px);
+      background: #fff;
+      border-radius: 50px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .hero button {
+      background: #C62641;
+      color: #fff;
+      border: none;
+      padding: 0.7rem 1.5rem;
+      font-size: 1rem;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background 0.3s ease-in-out;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .hero button:hover {
+      background: #CD3D54;
+    }
+
+    footer {
+      background: #F8F8F8;
+      color: #333;
+      text-align: center;
+      padding: 2rem 0;
+      margin-top: auto;
+      box-shadow: 0 -10px 15px rgba(0, 0, 0, 0.1);
+      border-top: 2px solid #e5e5e5;
+    }
+
+    /* Add a pseudo-element for additional shadow depth */
+    footer::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      right: 0;
+      height: 15px;
+      top: -15px;
+      background: linear-gradient(
+        to bottom,
+        transparent,
+        rgba(0, 0, 0, 0.05)
+      );
+    }
+
+    footer p {
+      margin: 0;
+      font-size: 0.9rem;
+    }
+
+    /* Modal Styles */
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: rgba(0, 0, 0, 0.5);
+      visibility: hidden;
+      opacity: 0;
+      transition: visibility 0s, opacity 0.3s;
+    }
+
+    .modal.active {
+      visibility: visible;
+      opacity: 1;
+    }
+
+    .modal-content {
+      background: #fff;
+      padding: 2rem;
+      border-radius: 8px;
+      width: 400px;
+      max-height: 80vh;
+      overflow-y: auto;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    .modal-content::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .modal-content::-webkit-scrollbar-track {
+      background: #f1f1f1;
+      border-radius: 4px;
+    }
+
+    .modal-content::-webkit-scrollbar-thumb {
+      background: #C62641;
+      border-radius: 4px;
+    }
+
+    .modal-content::-webkit-scrollbar-thumb:hover {
+      background: #CD3D54;
+    }
+
+    .modal-content h2 {
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+
+    .modal-content form {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .modal-content form input,
+    .modal-content form textarea,
+    .modal-content form button {
+      margin: 0.5rem 0;
+      padding: 0.8rem;
+      font-size: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    .modal-content form button {
+      background: #C62641;
+      color: #fff;
+      cursor: pointer;
+      transition: background 0.3s ease-in-out;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 500;
+    }
+
+    .modal-content form button:hover {
+      background: #CD3D54;
+    }
+
+    .modal-close {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      color: #333;
+    }
+
+    /* Landing Page Styles */
+    .landing-page {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: black;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+    }
+
+    .star-sign {
+      font-size: 2rem;
+      color: white;
+      animation: twinkle 2s infinite;
+      text-shadow: 0 0 10px white, 0 0 20px white, 0 0 30px white;
+      position: absolute;
+    }
+
+    .close-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      color: white;
+      background: rgba(0, 0, 0, 0.5);
+      padding: 10px;
+      font-size: 1.5rem;
+      border: none;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+
+    @keyframes twinkle {
+      0% {
+        opacity: 0.5;
+      }
+      50% {
+        opacity: 1;
+      }
+      100% {
+        opacity: 0.5;
+      }
+    }
+
+    /* Responsive Styles */
+    @media (max-width: 768px) {
+      .menu-btn {
+        display: block;
+      }
+
+      .nav-links {
+        position: absolute;
+        top: 60px;
+        right: 0;
+        background: #C62641;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        transform: translateY(-100%);
+        visibility: hidden;
+        opacity: 0;
+        z-index: 1000;
+      }
+
+      .nav-links.open {
+        transform: translateY(0);
+        visibility: visible;
+        opacity: 1;
+      }
+
+      .nav-links li {
+        margin: 0.5rem 0;
+      }
+
+      .hero h1 {
+        font-size: 2rem;
+        top: 120px;
+        padding: 0 20px;
+      }
+
+      .hero p {
+        font-size: 1rem;
+        top: 170px;
+        padding: 0 20px;
+      }
+
+      .hero button {
+        font-size: 0.9rem;
+        padding: 0.5rem 1rem;
+      }
+
+      .hero-content {
+        height: calc(100vh - 250px);
+      }
+
+      footer {
+        padding: 5rem 0;
+      }
+
+      /* Hide logo when menu is open */
+      .nav-links.open ~ .logo {
+        opacity: 0;
+        visibility: hidden;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .hero h1 {
+        font-size: 1.35rem;
+        top: 120px;
+      }
+
+      .hero p {
+        font-size: 1rem;
+        top: 200px;
+        max-width: 300px;
+        line-height: 1.4;
+      }
+
+      .hero-content {
+        height: calc(100vh - 300px);
+      }
+
+      footer {
+        padding: 5rem 0;
+      }
+    }
+
+    /* Add popping animation styles */
+    @keyframes pop {
+      0% { 
+        transform: scale(1);
+        opacity: 1;
+      }
+      50% {
+        transform: scale(1.5);
+        opacity: 0.5;
+      }
+      100% {
+        transform: scale(0);
+        opacity: 0;
+      }
+    }
+
+    @keyframes particleAnimation {
+      0% {
+        transform: translate(0, 0) scale(1);
+        opacity: 1;
+      }
+      100% {
+        transform: translate(var(--x), var(--y)) scale(0);
+        opacity: 0;
+      }
+    }
+
+    .balloon {
+      cursor: pointer;
+      position: absolute;
+      width: 60px;
+      height: 75px;
+      border-radius: 50%;
+      box-shadow: inset -5px -5px 15px rgba(0,0,0,0.3);
+      animation: float 12s ease-in-out infinite;
+    }
+
+    /* Particles for pop effect */
+    .particle {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      pointer-events: none;
+      opacity: 0;
+    }
+
+    /* Remove all Doraemon-related styles */
+    .doraemon,
+    .head,
+    .face,
+    .eye,
+    .pupil,
+    .nose,
+    .mouth,
+    .body,
+    .pocket,
+    .collar,
+    .bell,
+    .arm,
+    .hand,
+    .foot,
+    .whisker {
+      display: none;
+    }
+
+    /* Modal state handling */
+    .modal.active ~ header .nav-links a:hover {
+      transform: none;
+    }
+
+    .modal.active ~ header .nav-links a.active {
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Add active underline for contact when modal is open */
+    .modal.active ~ header .nav-links a[href="#contact"] {
+      font-weight: bold;
+    }
+
+    .modal.active ~ header .nav-links a[href="#contact"]::after {
+      content: '';
+      position: absolute;
+      bottom: 10px;
+      left: 30px;
+      right: 30px;
+      height: 2px;
+      background: #fff;
+      transform: scaleX(1);
+      transition: transform 0.3s ease;
+    }
+
+    /* Keep other hover effects disabled during modal */
+    .modal.active ~ header .nav-links a:not([href="#contact"]):hover::after {
+      transform: scaleX(0);
+    }
+
+    /* Ensure other links don't show underline when modal is active */
+    .modal.active ~ header .nav-links a:not([href="#contact"])::after {
+      transform: scaleX(0);
+    }
+
+    /* Responsive adjustment for smaller screens */
+    @media (max-width: 480px) {
+      .modal-content {
+        width: 90%;
+        margin: 0 20px;
+      }
+    }
+
+    /* Style form inputs and textarea */
+    .modal-content form input,
+    .modal-content form textarea {
+      margin: 0.5rem 0;
+      padding: 0.8rem;
+      font-size: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    /* Specific styles for textarea */
+    .modal-content form textarea {
+      min-height: 100px;
+      max-height: 300px;
+      height: 150px;
+      resize: vertical;  /* Only allow vertical resizing */
+      overflow-y: auto;  /* Enable vertical scrolling */
+      overflow-x: hidden;  /* Prevent horizontal scrolling */
+    }
+
+    /* Style textarea scrollbar */
+    .modal-content form textarea::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .modal-content form textarea::-webkit-scrollbar-track {
+      background: #f1f1f1;
+      border-radius: 4px;
+    }
+
+    .modal-content form textarea::-webkit-scrollbar-thumb {
+      background: #C62641;
+      border-radius: 4px;
+    }
+
+    .modal-content form textarea::-webkit-scrollbar-thumb:hover {
+      background: #CD3D54;
+    }
+
+    /* Add blur effect to main content when nav is open */
+    .hero.blur,
+    .hero-content.blur,
+    footer.blur {
+      filter: blur(5px);
+      transition: filter 0.3s ease;
+    }
+
+    /* Mobile styles */
+    @media (max-width: 768px) {
+      .menu-btn {
+        display: block;
+      }
+
+      /* Transform menu button to X */
+      .menu-btn.open::before {
+        content: "×";  /* X symbol */
+      }
+
+      .menu-btn:not(.open)::before {
+        content: "☰";  /* Hamburger symbol */
+      }
+    }
+
+    /* Social links styles */
+    .social-links {
+      margin-bottom: 1rem;
+    }
+
+    .social-links a {
+      color: #333;
+      font-size: 1.5rem;
+      margin: 0 15px;
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+
+    .social-links a:hover {
+      color: #C62641;
+    }
+  </style>
+  <script>
+    // Show the website after 3 seconds (for the landing page)
+    window.onload = function() {
+      setTimeout(function() {
+        document.querySelector('.landing-page').style.display = 'none';
+        document.body.style.overflow = 'auto'; // Allow scrolling once the landing page disappears
+      }, 3000); // Adjust timing if needed
+    }
+
+    function toggleMenu(btn) {
+      const navLinks = document.querySelector('.nav-links');
+      const hero = document.querySelector('.hero');
+      const heroContent = document.querySelector('.hero-content');
+      const footer = document.querySelector('footer');
+      const logo = document.querySelector('.logo');
+      
+      navLinks.classList.toggle('open');
+      btn.classList.toggle('open');  // Toggle open class on button
+      
+      if (navLinks.classList.contains('open')) {
+        hero.classList.add('blur');
+        heroContent.classList.add('blur');
+        footer.classList.add('blur');
+        logo.style.opacity = '0';
+        logo.style.visibility = 'hidden';
+      } else {
+        hero.classList.remove('blur');
+        heroContent.classList.remove('blur');
+        footer.classList.remove('blur');
+        logo.style.opacity = '1';
+        logo.style.visibility = 'visible';
+      }
+    }
+
+    function openModal() {
+      const modal = document.querySelector('.modal');
+      modal.classList.add('active');
+    }
+
+    function closeModal() {
+      const modal = document.querySelector('.modal');
+      modal.classList.remove('active');
+    }
+
+    // Close the landing page when clicking the close button
+    function closeLandingPage() {
+      document.querySelector('.landing-page').style.display = 'none';
+      document.body.style.overflow = 'auto'; // Allow scrolling after the landing page disappears
+    }
+
+    function createParticles(event, color) {
+      const balloon = event.target;
+      const rect = balloon.getBoundingClientRect();
+      const centerX = rect.left + rect.width / 2;
+      const centerY = rect.top + rect.height / 2;
+
+      // Create particles
+      for (let i = 0; i < 12; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'particle';
+        particle.style.backgroundColor = color;
+        particle.style.left = centerX + 'px';
+        particle.style.top = centerY + 'px';
+
+        // Random direction for each particle
+        const angle = (i / 12) * 360;
+        const distance = 100;
+        const x = Math.cos(angle * Math.PI / 180) * distance;
+        const y = Math.sin(angle * Math.PI / 180) * distance;
+
+        particle.style.setProperty('--x', x + 'px');
+        particle.style.setProperty('--y', y + 'px');
+
+        document.body.appendChild(particle);
+        
+        // Animate particle
+        particle.style.animation = 'particleAnimation 0.5s ease-out forwards';
+
+        // Remove particle after animation
+        setTimeout(() => {
+          particle.remove();
+        }, 500);
+      }
+
+      // Play pop sound
+      const popSound = new Audio('data:audio/wav;base64,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qJrx4KOQjahZxWbcZgztj2c49nKmkId44S71j0c8eV9yDK6uPRzx5X18eDvjvQ6yKo9ZSS6l//8elePK/Lf//IInrOF/FvDoADYAGBMGb7FtErm5MXMlmPAJQVgWta7Zx2go+8xJ0UiCb8LHHdftWyLJE0QIAIsI+UbXu67dZMjmgDGCGl1H+vpF4NSDckSIkk7Vd+sxEhBQMRU8j/12UIRhzSaUdQ+rQU5kGeFxm+hb1oh6pWWmv3uvmReDl0UnvtapVaIzo1jZbf/pD6ElLqSX+rUmOQNpJFa/r+sa4e/pBlAABoAAAAA3CUgShLdGIxsY7AUABPRrgCABdDuQ5GC7DqPQCgbbJUAoRSUj+NIEig0YfyWUho1VBBBA//uQZB4ABZx5zfMakeAAAAmwAAAAF5F3P0w9GtAAACfAAAAAwLhMDmAYWMgVEG1U0FIGCBgXBXAtfMH10000EEEEEECUBYln03TTTdNBDZopopYvrTTdNa325mImNg3TTPV9q3pmY0xoO6bv3r00y+IDGid/9aaaZTGMuj9mpu9Mpio1dXrr5HERTZSmqU36A3CumzN/9Robv/Xx4v9ijkSRSNLQhAWumap82WRSBUqXStV/YcS+XVLnSS+WLDroqArFkMEsAS+eWmrUzrO0oEmE40RlMZ5+ODIkAyKAGUwZ3mVKmcamcJnMW26MRPgUw6j+LkhyHGVGYjSUUKNpuJUQoOIAyDvEyG8S5yfK6dhZc0Tx1KI/gviKL6qvvFs1+bWtaz58uUNnryq6kt5RzOCkPWlVqVX2a/EEBUdU1KrXLf40GoiiFXK///qpoiDXrOgqDR38JB0bw7SoL+ZB9o1RCkQjQ2CBYZKd/+VJxZRRZlqSkKiws0WFxUyCwsKiMy7hUVFhIaCrNQsKkTIsLivwKKigsj8XYlwt/WKi2N4d//uQRCSAAjURNIHpMZBGYiaQPSYyAAABLAAAAAAAACWAAAAApUF/Mg+0aohSIRobBAsMlO//Kk4soosy1JSFRYWaLC4qZBYWFRGZdwqKiwkNBVmoWFSJkWFxX4FFRQWR+LsS4W/rFRb/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////VEFHAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAU291bmRib3kuZGUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMjAwNGh0dHA6Ly93d3cuc291bmRib3kuZGUAAAAAAAAAACU=');
+      popSound.play();
+
+      // Pop animation for balloon
+      balloon.style.animation = 'pop 0.3s ease-out forwards';
+
+      // Remove balloon after animation
+      setTimeout(() => {
+        balloon.remove();
+      }, 300);
+    }
+
+    // Add click event listeners to balloons
+    document.querySelectorAll('.balloon').forEach(balloon => {
+      balloon.addEventListener('click', (e) => {
+        const color = window.getComputedStyle(balloon).backgroundColor;
+        createParticles(e, color);
+      });
+    });
+  </script>
+</head>
+<body>
+     <!-- Landing Page (Black Background with Multiple Star Signs) -->
+  <div class="landing-page">
+    <button class="close-btn" onclick="closeLandingPage()">Close</button>
+    <div class="star-sign" style="top: 20%; left: 20%;">☆</div>
+    <div class="star-sign" style="top: 30%; left: 50%;">☆</div>
+    <div class="star-sign" style="top: 50%; left: 30%;">☆</div>
+    <div class="star-sign" style="top: 60%; left: 70%;">☆</div>
+    <div class="star-sign" style="top: 40%; left: 80%;">☆</div>
+    <div class="star-sign" style="top: 70%; left: 21%;">☆</div>
+    <div class="star-sign" style="top: 10%; left: 10%;">☆</div>
+    <div class="star-sign" style="top: 80%; left: 99%;">☆</div>
+    <div class="star-sign" style="top: 50%; left: 90%;">☆</div>
+    <div class="star-sign" style="top: 20%; left: 28%;">☆</div>
+    <div class="star-sign" style="top: 30%; left: 57%;">☆</div>
+    <div class="star-sign" style="top: 50%; left: 34%;">☆</div>
+    <div class="star-sign" style="top: 60%; left: 71%;">☆</div>
+    <div class="star-sign" style="top: 40%; left: 12%;">☆</div>
+    <div class="star-sign" style="top: 70%; left: 15%;">☆</div>
+    <div class="star-sign" style="top: 10%; left: 10%;">☆</div>
+    <div class="star-sign" style="top: 80%; left: 90%;">☆</div>
+    <div class="star-sign" style="top: 50%; left: 44%;">☆</div>
+    <!-- Add more star signs as needed -->
+  </div>
+
+  <!-- Navbar -->
+  <header>
+    <div class="container">
+      <nav>
+        <div class="logo">Bishal Lamichhane</div>
+        <ul class="nav-links">
+          <li><a href="#home" class="active">Home</a></li>
+          <li><a href="#contact" onclick="openModal()">Contact</a></li>
+        </ul>
+        <button class="menu-btn" onclick="toggleMenu(this)"></button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <h1>Hello, I'm Bishal Lamichhane</h1>
+    <p>Thank you for visiting. I'm a passionate web developer with a focus on creating user-friendly and efficient websites. With a strong background in front-end development, I specialize in crafting responsive and visually appealing designs. My goal is to deliver high-quality web solutions that not only look great but also provide a seamless user experience.</p>
+    <div class="hero-content">
+      <!-- Content goes here -->
+    </div>
+  </section>
+
+  <!-- 3D Cubes Section -->
+  <section class="cube-container">
+    <div class="cube"></div>
+    <div class="cube"></div>
+    <div class="cube"></div>
+    <div class="cube"></div>
+    <div class="cube"></div>
+    <div class="cube"></div>
+    <div class="cube"></div>
+    <div class="cube"></div>
+    <div class="cube"></div>
+    <div class="cube"></div>
+    <div class="cube"></div>
+    <div class="cube"></div>
+    <div class="cube"></div>
+    <div class="cube"></div>
+    <div class="cube"></div>
+    <div class="cube"></div>
+    <div class="cube"></div>
+    <div class="cube"></div>
+  </section>
+
+  <!-- Footer with social links -->
+  <footer>
+    <div class="social-links">
+      <a href="https://instagram.com/bishallc" target="_blank">
+        <i class="fab fa-instagram"></i>
+      </a>
+      <a href="https://facebook.com/bishallc" target="_blank">
+        <i class="fab fa-facebook"></i>
+      </a>
+      <a href="https://twitter.com/Bishalamichhane" target="_blank">
+        <i class="fab fa-twitter"></i>
+      </a>
+    </div>
+    <p>&copy; 2024 Bishal Lamichhane. All rights reserved.</p>
+  </footer>
+
+  <!-- Modal (Contact Form) -->
+  <div class="modal">
+    <div class="modal-content">
+      <button class="modal-close" onclick="closeModal()">X</button>
+      <h2>Contact Me</h2>
+      <form>
+        <input type="text" placeholder="Your Name" required>
+        <input type="email" placeholder="Your Email" required>
+        <input type="text" placeholder="Subject" required>
+        <textarea placeholder="Your Message" required></textarea>
+        <button type="submit">Send</button>
+      </form>
+    </div>
+  </div>
+
+</body>
+</html>
